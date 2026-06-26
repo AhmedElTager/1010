@@ -1,6 +1,52 @@
-// =========================
-// عداد الأرقام
-// =========================
+// ===============================
+// Loader
+// ===============================
+
+window.addEventListener("load", () => {
+
+    const loader = document.getElementById("loader");
+
+    loader.style.opacity = "0";
+
+    setTimeout(() => {
+
+        loader.style.display = "none";
+
+    }, 600);
+
+});
+
+
+// ===============================
+// زر الرجوع لأعلى
+// ===============================
+
+const topBtn = document.getElementById("topBtn");
+
+window.addEventListener("scroll", () => {
+
+    if (window.scrollY > 300) {
+
+        topBtn.style.display = "flex";
+
+    } else {
+
+        topBtn.style.display = "none";
+
+    }
+
+});
+
+topBtn.addEventListener("click", () => {
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+// ===============================
+// العدادات المتحركة
+// ===============================
 
 const counters = document.querySelectorAll(".counter");
 
@@ -12,7 +58,7 @@ const startCounter = () => {
 
         let count = 0;
 
-        const speed = target / 80;
+        const speed = target / 100;
 
         const update = () => {
 
@@ -30,7 +76,7 @@ const startCounter = () => {
 
             }
 
-        }
+        };
 
         update();
 
@@ -38,160 +84,153 @@ const startCounter = () => {
 
 };
 
-
-// =========================
-// تشغيل العداد عند الوصول للقسم
-// =========================
-
-const numberSection = document.querySelector("#numbers");
-
-let started = false;
+let counterStarted = false;
 
 window.addEventListener("scroll", () => {
 
-    if (window.scrollY >= numberSection.offsetTop - 300) {
+    const stats = document.querySelector(".stats-section");
 
-        if (!started) {
+    if (!stats) return;
 
-            startCounter();
+    const position = stats.getBoundingClientRect().top;
 
-            started = true;
+    if (position < window.innerHeight && !counterStarted) {
 
-        }
+        counterStarted = true;
+
+        startCounter();
 
     }
 
 });
 
 
-// =========================
-// ظهور العناصر أثناء النزول
-// =========================
+// ===============================
+// الأسئلة الشائعة FAQ
+// ===============================
 
-const hiddenElements = document.querySelectorAll(
+const faqButtons = document.querySelectorAll(".faq-question");
 
-".step,.card,.client,.compare div,.number"
+faqButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const answer = button.nextElementSibling;
+
+        const isOpen = answer.style.display === "block";
+
+        document.querySelectorAll(".faq-answer").forEach(item => {
+
+            item.style.display = "none";
+
+        });
+
+        if (!isOpen) {
+
+            answer.style.display = "block";
+
+        }
+
+    });
+
+});
+    // ===============================
+// Animation عند النزول
+// ===============================
+
+const fadeElements = document.querySelectorAll(
+
+".step-card,.feature-card,.client-card,.compare-card,.review-card,.stat-box,.contact-card"
 
 );
 
-const observer = new IntersectionObserver(entries => {
+function revealOnScroll() {
 
-    entries.forEach(entry => {
+    fadeElements.forEach((element) => {
 
-        if (entry.isIntersecting) {
+        const top = element.getBoundingClientRect().top;
 
-            entry.target.style.opacity = "1";
+        const windowHeight = window.innerHeight;
 
-            entry.target.style.transform = "translateY(0)";
+        if (top < windowHeight - 100) {
+
+            element.classList.add("show");
 
         }
 
     });
 
-});
+}
 
-hiddenElements.forEach(el => {
+window.addEventListener("scroll", revealOnScroll);
 
-    el.style.opacity = "0";
-
-    el.style.transform = "translateY(50px)";
-
-    el.style.transition = ".8s";
-
-    observer.observe(el);
-
-});
+revealOnScroll();
 
 
-// =========================
-// تنقل سلس
-// =========================
+// ===============================
+// Reviews Slider
+// ===============================
 
-document.querySelectorAll("nav a").forEach(link => {
+const reviews = document.querySelectorAll(".review-card");
 
-    link.addEventListener("click", function(e) {
+let currentReview = 0;
 
-        e.preventDefault();
+function showReview(index){
 
-        const target = document.querySelector(this.getAttribute("href"));
+    reviews.forEach((review)=>{
 
-        target.scrollIntoView({
-
-            behavior: "smooth"
-
-        });
+        review.style.display="none";
 
     });
 
-});
+    reviews[index].style.display="block";
+
+}
+
+if(reviews.length > 0){
+
+    showReview(0);
+
+    setInterval(()=>{
+
+        currentReview++;
+
+        if(currentReview>=reviews.length){
+
+            currentReview=0;
+
+        }
+
+        showReview(currentReview);
+
+    },5000);
+
+}
 
 
-// =========================
-// زر واتساب
-// =========================
-
-const whatsapp = document.querySelector(".floating");
-
-whatsapp.addEventListener("mouseenter", () => {
-
-    whatsapp.style.transform = "scale(1.15)";
-
-});
-
-whatsapp.addEventListener("mouseleave", () => {
-
-    whatsapp.style.transform = "scale(1)";
-
-});
-
-
-// =========================
-// تغيير لون الهيدر أثناء النزول
-// =========================
+// ===============================
+// تغيير لون الهيدر أثناء التمرير
+// ===============================
 
 const header = document.querySelector("header");
 
-window.addEventListener("scroll", () => {
+window.addEventListener("scroll",()=>{
 
-    if (window.scrollY > 80) {
+    if(window.scrollY>80){
 
-        header.style.background = "#0d2b55";
+        header.style.background="#0D1B4C";
 
-        header.style.transition = ".4s";
+        header.style.boxShadow="0 10px 25px rgba(0,0,0,.2)";
 
-        document.querySelectorAll("nav a").forEach(link => {
+    }else{
 
-            link.style.color = "#fff";
+        header.style.background="rgba(13,27,76,.88)";
 
-        });
-
-    } else {
-
-        header.style.background = "#fff";
-
-        document.querySelectorAll("nav a").forEach(link => {
-
-            link.style.color = "#0d2b55";
-
-        });
+        header.style.boxShadow="none";
 
     }
 
 });
-
-
-// =========================
-// رسالة تجريبية عند الضغط على زر ابدأ الآن
-// =========================
-
-const startBtn = document.querySelector(".btn");
-
-if(startBtn){
-
-startBtn.addEventListener("click", () => {
-
-console.log("Welcome To OneOrder");
+    });
 
 });
-
-}
